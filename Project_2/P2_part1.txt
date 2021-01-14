@@ -1,0 +1,52 @@
+"u in $a0; v in $a1, final in $v0"
+"registers begin at $t0"
+"sll; srl;sub;subi;slt;or;ori;beq;bne;add;addi;and;andi;lui"
+.globl main
+.data 	addi $a0, $0, 12
+	    addi $a1, $0, 780
+.text
+main:	
+	jal binaryGCD
+	
+	ori $v0, $0, 10
+	syscall
+	
+binaryGCD: beq $a0, $0, Label_u0   # "if u = 0"
+		   Label_u0 : addi $v0, $a0, $0   # "return v"
+
+		   beq $a1, $0, Label_v0  # "if v = 0"
+		   Label_v0: addi $v0, $a1, $0 # "return u"
+
+		   beq $a0, $a1, Label_uv  #"if u = v"
+		   Label_uv: addi $v0, $a0, $0 #"return u"
+
+		   beq $a1, $a0, Label_vu #"if v = u"
+		   Label_vu: addi $v0, $a1, $0 #"return v"
+
+		   slt $t0, $a0, 2 # "$t0 = u/2"
+		   sll $t0, $t0, 2 # "$t0 = t0*2"
+		   sub $t0, $a0, $t1 #"$t0 = $a0 - $t1"
+
+		   beq $t0, $0, Else
+		   slt $t1, $a1, 2 # "$t1 = v/2"
+		   sll $t1, $t0, 2 # "$t1 = t1*2"
+		   sub $t1, $a0, $t1 #"$t1 = $a0 - $t1"
+
+		   beq $t1, $0, Else_v
+           #"return 2*gcd(u/v, v/2)"
+           Else_v: "return gcd(u/2, v)"
+
+           Else: slt $t1, $a1, 2 # "$t1 = v/2"
+	             sll $t1, $t0, 2 # "$t1 = t1*2"
+                 sub $t1, $a0, $t1 #"$t1 = $a0 - $t1"
+
+           beq $t1, $0, Else_v2 # "v is even"
+           "return gcd(u, v/2)"
+	       Else_v2: slt, $t3, $a0, $a1
+			        beq, $t3, $0, unequalu_v
+			        "return gcd((v-u)/2, u)"
+		   unequalu_v: "return gcd((u-v)/2, u)"
+		   
+		   jr $ra
+
+

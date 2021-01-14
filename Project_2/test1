@@ -1,0 +1,15 @@
+.globl main
+.data
+.text
+main:	
+	addi $a0, $zero, 12
+	addi $a1, $zero, 12
+	
+	jal binaryGCD
+	addi $s1, $v0, 0
+	
+	
+	ori $v0, $0, 10
+	syscall
+	
+	
